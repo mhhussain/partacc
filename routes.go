@@ -20,6 +20,14 @@ var routes = Routes{
 		"/",
 		Ping,
 	},
+	// Outbox
+	Route{
+		"Outbox",
+		"POST",
+		"/outbox",
+		Outbox,
+	},
+	// Health
 	Route{
 		"Health",
 		"GET",

@@ -16,11 +16,15 @@ func Health(w http.ResponseWriter, r *http.Request) {
 }
 
 func Poison(w http.ResponseWriter, r *http.Request) {
-
+	h.Status = "poisoned"
+	h.Message = "poisoned"
+	json.NewEncoder(w).Encode(h)
 }
 
 func Replenish(w http.ResponseWriter, r *http.Request) {
-
+	h.Status = "listening"
+	h.Message = "replenished"
+	json.NewEncoder(w).Encode(h)
 }
 
 var h = HealthObj{
