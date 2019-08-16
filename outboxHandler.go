@@ -2,40 +2,44 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
 type Particle struct {
-	Endpoint string `json:"endpoint"`
-	RData    Return `json:"return"`
-	Data     string `json:"data"`
+	Endpoint string      `json:"endpoint"`
+	Return   Return      `json:"return"`
+	Data     interface{} `json:"data"`
 }
 
 type Return struct {
 	Success string `json:"success"`
-	Failure string `json:"failure"`
+	Fail    string `json:"fail"`
 }
-
-type q []Particle
 
 func Outbox(w http.ResponseWriter, r *http.Request) {
 	var incomingp Particle
-	/*decoder := json.NewDecoder(r.Body)
+	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&incomingp); err != nil {
 		response, _ := json.Marshal("missing.particle")
 		w.WriteHeader(400)
 		w.Write(response)
+		return
 	}
-	defer r.Body.Close()*/
+	defer r.Body.Close()
 
-	_ = json.NewDecoder(r.Body).Decode(&incomingp)
+	ok := false
+	for !ok {
+		select {
+		case q <- incomingp:
+			ok = true
+		default:
+			ok = false
+		}
+	}
 
-	fmt.Fprintln(w, "world: ", incomingp)
+	if ok {
+		response, _ := json.Marshal("particle.received")
+		w.WriteHeader(200)
+		w.Write(response)
+	}
 }
-
-/*
-
-curl -d '{"endpoint":"dwdw","return":{"success":"a","failure":"b"},"data":"dtt"}' -H 'Content-type: application/json' -X POST localhost:8080/outbox
-
-*/

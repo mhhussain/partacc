@@ -7,9 +7,13 @@ import (
 )
 
 func main() {
+	// create routes
 	router := NewRouter()
 
-	log.Fatal(http.ListenAndServe(":8080", router))
+	// start q processing
+	runq()
+
+	log.Fatal(http.ListenAndServe(":91", router))
 }
 
 func Ping(w http.ResponseWriter, r *http.Request) {
