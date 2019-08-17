@@ -15,10 +15,10 @@ type Routes []Route
 
 var routes = Routes{
 	Route{
-		"Ping",
+		"RCount",
 		"GET",
-		"/",
-		Ping,
+		"/status/rcount",
+		RCount,
 	},
 	// Outbox
 	Route{

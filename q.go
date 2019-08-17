@@ -12,7 +12,7 @@ import (
 var q = make(chan Particle, 1000)
 
 func runq() {
-	ticker := time.NewTicker(10 * time.Second)
+	ticker := time.NewTicker(100 * time.Millisecond)
 	quit := make(chan struct{})
 	go func() {
 		for {
@@ -37,18 +37,36 @@ func runq() {
 }
 
 func makeR(particle Particle) {
-	//fmt.Println(json.Marshal(particle.Data.(map[string]interface{})))
-	j, err := json.Marshal(particle.Data.(map[string]interface{}))
-	req, err := http.NewRequest("POST", particle.Endpoint, bytes.NewBuffer(j))
-	req.Header.Set("Content-Type", "application/json")
+	// marshal particle data package
+	j, _ := json.Marshal(particle.Data.(map[string]interface{}))
 
+	// send particle endpoint request
+	req, _ := http.NewRequest("POST", particle.Endpoint, bytes.NewBuffer(j))
+	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("wrong")
+		// handle particle return [failure]
+		reqFail, _ := http.NewRequest("POST", particle.Return.Fail, bytes.NewBuffer(j))
+		reqFail.Header.Set("Content-Type", "application/json")
+		clientFail := &http.Client{}
+		respFail, err := clientFail.Do(reqFail)
+		if err != nil {
+			fmt.Println(err)
+		}
+		defer respFail.Body.Close()
+		return
 	}
 	defer resp.Body.Close()
 
+	// handle particle return [success]
 	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("body: ", string(body))
+	reqSuc, _ := http.NewRequest("POST", particle.Return.Success, bytes.NewBuffer(body))
+	reqSuc.Header.Set("Content-Type", "application/json")
+	clientSuc := &http.Client{}
+	respSuc, err := clientSuc.Do(reqSuc)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer respSuc.Body.Close()
 }

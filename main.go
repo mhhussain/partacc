@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"log"
 	"net/http"
 )
@@ -16,6 +16,6 @@ func main() {
 	log.Fatal(http.ListenAndServe(":91", router))
 }
 
-func Ping(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "pong")
+func RCount(w http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(w).Encode(rCount)
 }
