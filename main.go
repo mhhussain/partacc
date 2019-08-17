@@ -13,7 +13,7 @@ func main() {
 	// start q processing
 	runq()
 
-	log.Fatal(http.ListenAndServe(":91", router))
+	log.Fatal(http.ListenAndServe(":80", router))
 }
 
 func RCount(w http.ResponseWriter, r *http.Request) {
