@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM arm32v7/golang
 
 WORKDIR /go/src/app
 COPY . .
