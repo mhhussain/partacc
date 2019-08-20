@@ -12,14 +12,13 @@ import (
 var q = make(chan Particle, 1000)
 
 func runq() {
-	ticker := time.NewTicker(100 * time.Millisecond)
+	ticker := time.NewTicker(1000 * time.Millisecond)
 	quit := make(chan struct{})
 	go func() {
 		for {
 			select {
 			case <-ticker.C:
-				qend := false
-				for !qend {
+				for qend, i := false, 0; !qend && i < 100; i++ {
 					var tparticle Particle
 					select {
 					case tparticle = <-q:

@@ -20,6 +20,12 @@ var routes = Routes{
 		"/status/rcount",
 		RCount,
 	},
+	Route{
+		"QDepth",
+		"GET",
+		"/status/qdepth",
+		QDepth,
+	},
 	// Outbox
 	Route{
 		"Outbox",

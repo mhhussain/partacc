@@ -19,3 +19,7 @@ func main() {
 func RCount(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(rCount)
 }
+
+func QDepth(w http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(w).Encode(len(q))
+}
